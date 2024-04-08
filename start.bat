@@ -1,0 +1,2 @@
+python merek.py
+pause
