@@ -8,53 +8,53 @@ FOV_Circle.NumSides = 100 -- Smooth circle edges
 FOV_Circle.Thickness = 1.5 -- Circle border thickness
 FOV_Circle.Filled = false -- Ensure it's a circle outline
 FOV_Circle.Position = Vector2.new(workspace.CurrentCamera.ViewportSize.X / 2,
-                                  workspace.CurrentCamera.ViewportSize.Y / 2)
+	workspace.CurrentCamera.ViewportSize.Y / 2)
 
 
 game:GetService("RunService").RenderStepped:Connect(function()
-    local camera = workspace.CurrentCamera
-    FOV_Circle.Position = Vector2.new(camera.ViewportSize.X / 2, camera.ViewportSize.Y / 2)
-    FOV_Circle.Visible = true -- Always ensure it's visible
+	local camera = workspace.CurrentCamera
+	FOV_Circle.Position = Vector2.new(camera.ViewportSize.X / 2, camera.ViewportSize.Y / 2)
+	FOV_Circle.Visible = true -- Always ensure it's visible
 end)
 
 
 game:GetService("Players").LocalPlayer.AncestryChanged:Connect(function()
-    FOV_Circle:Remove()
+	FOV_Circle:Remove()
 end)
 function getplrsname()
-for i,v in pairs(game:GetChildren()) do
-if v.ClassName == "Players" then
-return v.Name
-end
-end
+	for i,v in pairs(game:GetChildren()) do
+		if v.ClassName == "Players" then
+			return v.Name
+		end
+	end
 end
 local players = getplrsname()
 local plr = game[players].LocalPlayer
 coroutine.resume(coroutine.create(function()
-while  wait(1) do
-coroutine.resume(coroutine.create(function()
-for _,v in pairs(game[players]:GetPlayers()) do
-if v.Name ~= plr.Name and v.Character then
-v.Character.RightUpperLeg.CanCollide = false
-v.Character.RightUpperLeg.Transparency = 10
-v.Character.RightUpperLeg.Size = Vector3.new(13,13,13)
+	while  wait(1) do
+		coroutine.resume(coroutine.create(function()
+			for _,v in pairs(game[players]:GetPlayers()) do
+				if v.Name ~= plr.Name and v.Character then
+					v.Character.RightUpperLeg.CanCollide = false
+					v.Character.RightUpperLeg.Transparency = 10
+					v.Character.RightUpperLeg.Size = Vector3.new(13,13,13)
 
-v.Character.LeftUpperLeg.CanCollide = false
-v.Character.LeftUpperLeg.Transparency = 10
-v.Character.LeftUpperLeg.Size = Vector3.new(13,13,13)
+					v.Character.LeftUpperLeg.CanCollide = false
+					v.Character.LeftUpperLeg.Transparency = 10
+					v.Character.LeftUpperLeg.Size = Vector3.new(13,13,13)
 
-v.Character.HeadHB.CanCollide = false
-v.Character.HeadHB.Transparency = 10
-v.Character.HeadHB.Size = Vector3.new(13,13,13)
+					v.Character.HeadHB.CanCollide = false
+					v.Character.HeadHB.Transparency = 10
+					v.Character.HeadHB.Size = Vector3.new(13,13,13)
 
-v.Character.HumanoidRootPart.CanCollide = false
-v.Character.HumanoidRootPart.Transparency = 10
-v.Character.HumanoidRootPart.Size = Vector3.new(13,13,13)
+					v.Character.HumanoidRootPart.CanCollide = false
+					v.Character.HumanoidRootPart.Transparency = 10
+					v.Character.HumanoidRootPart.Size = Vector3.new(13,13,13)
 
-end
-end
-end))
-end
+				end
+			end
+		end))
+	end
 end))
 
 local UserInputService = game:GetService("UserInputService")
@@ -85,12 +85,54 @@ local Configuration = {
 	TeamCheck = true,
 }
 
+local Configuration = {
+	TeamCheck = true,
+}
+
+local LocalPlayer = game.Players.LocalPlayer
+local UserInputService = game:GetService("UserInputService")
+
+-- Create a ScreenGui to display the status
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Parent = game.CoreGui
+
+local StatusLabel = Instance.new("TextLabel")
+StatusLabel.Parent = ScreenGui
+StatusLabel.AnchorPoint = Vector2.new(0.5, 0) -- Centered horizontally
+StatusLabel.Position = UDim2.new(0.5, 0, 0, 10) -- Top-center position
+StatusLabel.Size = UDim2.new(0, 200, 0, 50)
+StatusLabel.BackgroundTransparency = 1 -- Make background transparent
+StatusLabel.TextColor3 = Color3.new(1, 1, 1) -- White text
+StatusLabel.TextSize = 24
+StatusLabel.Font = Enum.Font.SourceSansBold
+StatusLabel.Text = "Team Check: ON"
+
+local function UpdateStatusLabel()
+	if Configuration.TeamCheck then
+		StatusLabel.Text = "Team Check: ON"
+	else
+		StatusLabel.Text = "Team Check: OFF"
+	end
+end
+
+-- Function to toggle TeamCheck
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+	if gameProcessed then return end -- Ignore if the input is processed by the game
+
+	if input.KeyCode == Enum.KeyCode.T then
+		Configuration.TeamCheck = not Configuration.TeamCheck
+		UpdateStatusLabel()
+	end
+end)
+
+-- Function to check if a player is an enemy
 local function IsEnemy(Player)
 	if Configuration.TeamCheck then
 		return Player.Team ~= LocalPlayer.Team
 	end
 	return true
 end
+
 
 local function joinDifferentServer()
 	local success, serverList = pcall(function()
