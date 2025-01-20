@@ -808,3 +808,4 @@ local Toggle = ModsTab:CreateButton({
     end
 })
 
+print("Script Loaded Successfully") -- Add this at the end of your script
