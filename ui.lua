@@ -793,7 +793,17 @@ end
 
 
 local Toggle = ModsTab:CreateButton({
-    Name = "all weapons automatic (arsenal)",
-    Callback = function(Value)
-for i,v in next, game.ReplicatedStorage.Weapons:GetChildren() do
-for i,c in next, v:GetChildren() do -- for some reason, using GetDescendants dsent let you modify weapon ammo, so I do this instead
+    Name = "All Weapons Automatic (Arsenal)",
+    Callback = function()
+        for _, weapon in pairs(game.ReplicatedStorage.Weapons:GetChildren()) do
+            for _, child in pairs(weapon:GetChildren()) do
+                if child:IsA("ModuleScript") then
+                    local weaponData = require(child)
+                    if weaponData.Auto == false then
+                        weaponData.Auto = true -- Make the weapon automatic
+                    end
+                end
+            end
+        end
+    end
+})
