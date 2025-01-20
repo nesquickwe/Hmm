@@ -103,7 +103,7 @@ StatusLabel.Position = UDim2.new(0.5, 0, 0, 10) -- Top-center position
 StatusLabel.Size = UDim2.new(0, 200, 0, 50)
 StatusLabel.BackgroundTransparency = 1 -- Make background transparent
 StatusLabel.TextColor3 = Color3.new(1, 1, 1) -- White text
-StatusLabel.TextSize = 24
+StatusLabel.TextSize = 0.1
 StatusLabel.Font = Enum.Font.SourceSansBold
 StatusLabel.Text = "Team Check: ON"
 
@@ -241,59 +241,16 @@ ScreenGui.ResetOnSpawn = false
 
 Indicator.Size = UDim2.new(0, 200, 0, 25)
 Indicator.Position = UDim2.new(0.5, -100, 0.9, 0)
-Indicator.BackgroundTransparency = 0
+Indicator.BackgroundTransparency = 1
 Indicator.TextColor3 = Color3.new(1, 0, 0)
 Indicator.Font = Enum.Font.GothamBold
 Indicator.TextSize = 16
 Indicator.Parent = ScreenGui
 
 RunService.RenderStepped:Connect(function()
-	Indicator.Text = isAiming and "MAX AIM ASSIST ACTIVE" or ""
+	Indicator.Text = isAiming and "" or ""
 end)
 
-local function createOrRefreshTargetBox(player)
-	if player ~= LocalPlayer and player.Character and IsEnemy(player) then
-		local character = player.Character
-		local rootPart = character:FindFirstChild("HumanoidRootPart")
-		if rootPart then
-			local existingBox = character:FindFirstChild("BillboardGui")
-			if existingBox then
-				existingBox:Destroy()
-			end
-			local billboard = Instance.new("BillboardGui")
-			billboard.Adornee = rootPart
-			billboard.Size = BOX_SIZE
-			billboard.AlwaysOnTop = true
-			billboard.LightInfluence = 0
-			local boxFrame = Instance.new("Frame")
-			boxFrame.Size = UDim2.new(1, 0, 1, 0)
-			boxFrame.BackgroundTransparency = BOX_TRANSPARENCY
-			boxFrame.BackgroundColor3 = BOX_COLOR
-			boxFrame.BorderSizePixel = 0
-			boxFrame.Parent = billboard
-			billboard.Parent = character
-		end
-	end
-end
-
-local function refreshAllBoxes()
-	for _, player in pairs(Players:GetPlayers()) do
-		createOrRefreshTargetBox(player)
-	end
-end
-
-refreshAllBoxes()
-
-while true do
-	wait(REFRESH_INTERVAL)
-	refreshAllBoxes()
-end
-
-Players.PlayerAdded:Connect(function(player)
-	player.CharacterAdded:Connect(function()
-		createOrRefreshTargetBox(player)
-	end)
-end)
 
 while wait() do
 	game:GetService("Players").LocalPlayer.PlayerGui.GUI.Client.Variables.ammocount.Value = 999
